@@ -10,6 +10,8 @@
 
 > Creates an flow graph in SSA form based on an initial CFG. It can also apply data flow functions and will generate a live out set for each block as default for pruned SSA.
 
+WARNING: Work iun progress, not ready to be used yet.
+
 ## Install
 
 ```sh
