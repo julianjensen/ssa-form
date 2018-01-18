@@ -48,14 +48,15 @@
         "mocha": "^3.5.0",
         "npm-run-all": "^4.1.2",
         "rimraf": "^2.4.2",
-        "viz.js": "^1.8.0"
+        "chai": "^4.1.2",
+        "nyc": "^11.4.1",
+        "coveralls": "^3.0.0"
     },
     "dependencies": {
         "@std/esm": "^0.19.3",
-        "chai": "^4.1.2",
+        "viz.js": "^1.8.0",
         "dominators": "^1.1.1",
         "espree": "^3.5.2",
-        "nyc": "^11.4.1",
         "traversals": "^1.0.15",
         "vscode-textmate": "^3.2.0"
     },
