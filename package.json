@@ -1,0 +1,64 @@
+{
+    "name": "ssa-form",
+    "version": "1.0.0",
+    "description": "Creates an flow graph in SSA form based on an initial CFG. It can also apply data flow functions and will generate a live out set for each block as default for pruned SSA.",
+    "main": "index.js",
+    "scripts": {
+        "lint": "eslint index.js lib/**/*.js src/**/*.js",
+        "check": "npm run lint -s && dependency-check package.json --entry index.js",
+        "test": "rm -rf node_modules/.cache coverage/ && nyc --reporter=lcov --reporter=text --produce-source-map --require=@std/esm mocha",
+        "coveralls": "npm test && nyc report --reporter=text-lcov | coveralls",
+        "postcoveralls": "rimraf ./coverage",
+        "prepublish": "npm test",
+        "patch": "npm version patch && npm publish",
+        "minor": "npm version minor && npm publish",
+        "major": "npm version major && npm publish",
+        "postpublish": "git push origin master --follow-tags",
+        "changelog": "npx auto-changelog -p -l 10 && git add CHANGELOG.md",
+        "marktoc": "npx replace -s -q '### Changelog' '<!-- START doctoc -->\\\n<!-- END doctoc -->' CHANGELOG.md",
+        "toc": "npx doctoc --github --title \"### Changelog\" CHANGELOG.md",
+        "docs": "npx documentation readme index.js --infer-private='^_.*'  -s API --github",
+        "docsite": "npx documentation build index.js --infer-private='^_.*'  -f html -o docs",
+        "version": "run-s -s changelog marktoc toc"
+    },
+    "repository": {
+        "types": "git",
+        "url": "https://github.com/julianjensen/ssa-form.git"
+    },
+    "keywords": [
+        "ssa",
+        "static single assignment",
+        "static assignment",
+        "cfg",
+        "flowgraph",
+        "liveout",
+        "data-flow"
+    ],
+    "author": "Julian Jensen <jjdanois@gmail.com>",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/julianjensen/ssa-form/issues"
+    },
+    "homepage": "https://github.com/julianjensen/ssa-form#readme",
+    "devDependencies": {
+        "@types/esprima": "^4.0.1",
+        "@types/estree": "^0.0.38",
+        "dependency-check": "^2.5.1",
+        "eslint": "^4.4.0",
+        "mocha": "^3.5.0",
+        "npm-run-all": "^4.1.2",
+        "rimraf": "^2.4.2",
+        "viz.js": "^1.8.0"
+    },
+    "dependencies": {
+        "@std/esm": "^0.19.3",
+        "dominators": "^1.1.1",
+        "espree": "^3.5.2",
+        "traversals": "^1.0.15",
+        "vscode-textmate": "^3.2.0"
+    },
+    "@std/esm": {
+        "esm": "js",
+        "cjs": true
+    }
+}
