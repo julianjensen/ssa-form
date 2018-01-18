@@ -52,8 +52,10 @@
     },
     "dependencies": {
         "@std/esm": "^0.19.3",
+        "chai": "^4.1.2",
         "dominators": "^1.1.1",
         "espree": "^3.5.2",
+        "nyc": "^11.4.1",
         "traversals": "^1.0.15",
         "vscode-textmate": "^3.2.0"
     },
