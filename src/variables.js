@@ -12,9 +12,6 @@ import { create_dom_tree, frontiers_from_succs, iterative, make_dom, reverse_gra
 import create_data_flow from './data-flow';
 
 const
-    union         = ( a, b ) => [ ...b ].reduce( ( s, name ) => s.add( name ), a ),
-    _intersection = ( small, large ) => [ ...small ].reduce( ( s, name ) => large.has( name ) ? s.add( name ) : s, new Set() ),
-    intersection  = ( a, b ) => _intersection( ...( a.size < b.size ? [ a, b ] : [ b, a ] ) ),
     subtract      = ( a, b ) => [ ...a ].reduce( ( newSet, name ) => b.has( name ) ? newSet : newSet.add( name ), new Set() ),
 
     /**

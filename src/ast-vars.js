@@ -8,13 +8,46 @@
 
 import assert from 'assert';
 import { Syntax } from 'espree';
-import { flatten } from './utils';
 
 const circ           = { prop: () => circ, index: () => circ, assign: () => circ };
 
-export const isBaseFunction = ( { type } ) => type === Syntax.FunctionDeclaration || type === Syntax.FunctionExpression || type === Syntax.ArrowFunctionExpression;
+/**
+ * @param {?Array} arr
+ * @param {Array} [result=[]]
+ * @param {Boolean} [deep=true]
+ * @return {Array}
+ */
+function flatten( arr, result = [], deep = true )
+{
+    if ( !Array.isArray( arr ) ) return [ arr ];
 
-    /**
+    const
+        length = arr && arr.length;
+
+    if ( !length ) return result;
+
+    let index = -1;
+
+    while ( ++index < length )
+    {
+        const value = arr[ index ];
+
+        if ( Array.isArray( value ) )
+        {
+            if ( deep )
+                flatten( value, result, true );
+            else
+                result.push( ...value );
+        }
+        else
+            result[ result.length ] = value;
+    }
+
+    return result;
+}
+
+
+/**
  * @param {AnnotatedNode|BaseNode|Node} node
  * @return {*}
  */
@@ -428,124 +461,3 @@ function add_to_block( block, name, type, index, isDecl, implied, renameTarget )
 {
     block.add_var( name, type, index, isDecl, implied, renameTarget );
 }
-
-/**
- * @param {FunctionDeclaration|FunctionExpression|MethodDefinition|ArrowFunctionExpression|Property|Node} node
- * @param {string} [whatToGet='all']
- * @return {Array<Node>|string|CFGInfo}
- */
-export function get_from_function( node, whatToGet = 'all' )
-{
-    if ( node.type === Syntax.Program )
-    {
-        const pg = {
-            name:   'main',
-            params: [],
-            body:   grab_body( node ),
-            lines:  [ node.loc.start.line, node.loc.end.line ],
-            node
-        };
-
-        return whatToGet && whatToGet !== 'all' ? pg[ whatToGet ] : pg;
-    }
-
-    const
-        hopeForName = n => {
-            if ( n.type === Syntax.Identifier )
-                return n.name;
-            else if ( n.type === Syntax.MemberExpression )
-            {
-                if ( !n.computed && n.object.type === Syntax.Identifier && n.property.type === Syntax.Identifier ) return n.object.name + '.' + n.property.name;
-                if ( !n.computed || n.object.type !== Syntax.Identifier || n.property.type !== Syntax.Identifier ) return null;
-                // if ( n.object.name !== 'Symbol' && n.object.name !== 'super' ) return null;
-
-                return n.object + '.' + n.property;
-
-            }
-            else if ( n.type === Syntax.MethodDefinition )
-            {
-                if ( n.kind === 'constructor' )
-                    return 'constructor';
-                else if ( n.kind === 'method' )
-                    return hopeForName( n.key );
-                else
-                {
-                    const _name = hopeForName( n.key );
-
-                    return typeof _name === 'string' ? _name + '.' + n.kind : _name;
-                }
-            }
-            else if ( n.id )
-                return hopeForName( n.id );
-            else if ( n.parent.type === Syntax.Property || n.parent.type === Syntax.MethodDefinition )
-                return hopeForName( n.parent.key );
-            else if ( n.parent.type === Syntax.VariableDeclarator )
-                return hopeForName( n.parent.id );
-            else if ( n.parent.type === Syntax.AssignmentExpression )
-                return hopeForName( n.parent.left );
-
-            return 'anonymous';
-        };
-
-    if ( node.type === Syntax.Property || node.type === Syntax.MethodDefinition )
-        return get_from_function( node.value, whatToGet );
-    else if ( !isBaseFunction( node ) )
-        throw new SyntaxError( `No function found near ${node.type}, unable to find ${whatToGet}` );
-
-    return grab_info();
-
-    /**
-     * @param {AnnotatedNode|BaseFunction|MethodDefinition|Program} node
-     * @returns {?(AnnotatedNode|Array<AnnotatedNode>)}
-     */
-    function grab_body( node )
-    {
-        switch ( node.type )
-        {
-            case Syntax.Program:
-            case Syntax.FunctionDeclaration:
-            case Syntax.FunctionExpression:
-            case Syntax.ArrowFunctionExpression:
-                return node.body.type === Syntax.BlockStatement ? node.body.body : node.body;
-
-            case Syntax.MethodDefinition:
-                return grab_body( node.value );
-        }
-    }
-
-    /**
-     * @returns {*}
-     */
-    function grab_info()
-    {
-        switch ( whatToGet )
-        {
-            case 'name':
-                return hopeForName( node );
-
-            case 'params':
-                return node.params;
-
-            case 'body':
-                return grab_body( node );
-
-            case 'lines':
-                return [ node.loc.start.line, node.loc.end.line ];
-
-            default:
-                return {
-                    name:   hopeForName( node ),
-                    params: node.params,
-                    body:   node.body.type === Syntax.BlockStatement ? node.body.body : node.body,
-                    lines:  [ node.loc.start.line, node.loc.end.line ],
-                    node
-                };
-        }
-    }
-}
-
-module.exports = {
-    assignment,
-    isBaseFunction,
-    get_from_function
-};
