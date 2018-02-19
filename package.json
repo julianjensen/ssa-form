@@ -1,6 +1,6 @@
 {
     "name": "ssa-form",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "description": "Creates an flow graph in SSA form based on an initial CFG. It can also apply data flow functions and will generate a live out set for each block as default for pruned SSA.",
     "main": "index.js",
     "scripts": {
