@@ -3,10 +3,11 @@
     "version": "1.0.2",
     "description": "Creates an flow graph in SSA form based on an initial CFG. It can also apply data flow functions and will generate a live out set for each block as default for pruned SSA.",
     "main": "index.js",
+    "bin": "_cli.js",
     "scripts": {
         "lint": "eslint index.js lib/**/*.js src/**/*.js",
         "check": "npm run lint -s && dependency-check package.json --entry index.js",
-        "test": "rm -rf node_modules/.cache coverage/ && nyc --reporter=lcov --reporter=text --produce-source-map --require=@std/esm mocha",
+        "test": "rm -rf node_modules/.cache coverage/ && nyc --reporter=lcov --reporter=text --produce-source-map --require=esm mocha",
         "coveralls": "npm test && nyc report --reporter=text-lcov | npx coveralls",
         "postcoveralls": "rimraf ./coverage",
         "prepublish": "npm test",
@@ -53,14 +54,14 @@
         "tsd-jsdoc": "^2.0.0-beta.3"
     },
     "dependencies": {
-        "@std/esm": "^0.19.3",
+        "ast-flow-graph": "^1.0.13",
         "dominators": "^1.1.1",
+        "esm": "^3.0.26",
         "espree": "^3.5.2",
         "traversals": "^1.0.15",
         "vscode-textmate": "^3.2.0"
     },
-    "@std/esm": {
-        "esm": "js",
-        "cjs": true
+    "esm": {
+        "mode": "auto"
     }
 }

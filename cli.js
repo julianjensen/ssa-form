@@ -6,12 +6,12 @@
  *********************************************************************************************************************/
 "use strict";
 
-import CFG from './src/cfg';
 import path from 'path';
 import { promisify } from 'util';
 import fs from 'fs';
 import cli from 'command-line-args';
 import usage from 'command-line-usage';
+import { CFG } from 'ast-flow-graph';
 
 const
     version    = require( path.join( __dirname, 'package.json' ) ).version,

@@ -5,6 +5,6 @@
  *******************************************************************************/
 "use strict";
 
-require = require( '@std/esm' )( module, { esm: 'js', cjs: true } );
+require = require( 'esm' )( module, process.env.NODE_ENV === 'development' ? { mode: 'auto', debug: true, sourceMap: true, cache: false } : { mode: 'auto' } );
 require( './cli' );
 
